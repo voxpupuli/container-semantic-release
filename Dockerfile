@@ -13,10 +13,11 @@ RUN apk update \
     && apk upgrade \
     && apk add --no-cache --update git git-lfs openssh-client
 
-RUN addgroup -S release && adduser -S semantic -G release \
-    && mkdir -p /npm /data \
-    && chown -R semantic:release /npm /data
-USER semantic
+# TODO: https://github.com/voxpupuli/container-semantic-release/issues/3
+# RUN addgroup -g 1001 release && adduser -G release -u 1001 -D semantic \
+#     && mkdir -p /npm /data \
+#     && chown -R semantic:release /npm /data
+# USER semantic
 
 WORKDIR /npm
 COPY Dockerfile /
