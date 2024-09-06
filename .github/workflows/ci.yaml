@@ -1,0 +1,33 @@
+---
+name: CI🚦
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build_test_container:
+    name: 'Build test container'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          tags: 'ci/semantic-release:${{ github.event.number }}'
+          push: false
+
+  tests:
+    needs:
+      - build_test_container
+    runs-on: ubuntu-latest
+    name: Test suite
+    steps:
+      - run: echo Test suite completed
