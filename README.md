@@ -1,6 +1,16 @@
 # Voxpupuli Semantic Release Container
 
-## How to generate package.json and package-lock.json
+[![CI](https://github.com/voxpupuli/container-semantic-release/actions/workflows/ci.yaml/badge.svg)](https://github.com/voxpupuli/container-semantic-release/actions/workflows/ci.yaml)
+[![License](https://img.shields.io/github/license/voxpupuli/container-semantic-release.svg)](https://github.com/voxpupuli/container-semantic-release/blob/main/LICENSE)
+[![Sponsored by betadots GmbH](https://img.shields.io/badge/Sponsored%20by-betadots%20GmbH-blue.svg)](https://www.betadots.de)
+
+## Introduction
+
+This container can be used to create project releases. It encapsulates semantic-release and all necessary plugins.
+
+## Development
+
+### How to generate package.json and package-lock.json
 
 ```shell
 npm install \
