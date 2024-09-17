@@ -10,7 +10,6 @@
     "@semantic-release/release-notes-generator": "^14.0.1",
     "semantic-release": "^24.1.1",
     "semantic-release-commits-lint": "^1.1.0",
-    "semantic-release-github-milestones": "^2.0.5",
     "semantic-release-github-pullrequest": "^1.3.0",
     "semantic-release-jira-notes": "^4.0.0",
     "semantic-release-license": "^1.0.3",
