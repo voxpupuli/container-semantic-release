@@ -13,6 +13,11 @@ This container can be used to create project releases. It encapsulates semantic-
 ### How to generate package.json and package-lock.json
 
 ```shell
+docker run --rm -it -v $PWD:/data --entrypoint sh node:22.8.0-alpine3.20
+
+mkdir /npm
+cd /npm
+
 npm install \
   semantic-release \
   @bobvanderlinden/semantic-release-pull-request-analyzer \
@@ -24,11 +29,12 @@ npm install \
   @semantic-release/gitlab \
   @semantic-release/release-notes-generator \
   semantic-release-commits-lint \
-  semantic-release-github-milestones \
   semantic-release-github-pullrequest \
   semantic-release-jira-notes \
   semantic-release-license \
   semantic-release-major-tag \
   semantic-release-pypi \
   semantic-release-replace-plugin
+
+cp package.json package-lock.json /data
 ```
