@@ -6,7 +6,7 @@
 
 ## Introduction
 
-This container can be used to create project releases. It encapsulates semantic-release and all necessary plugins.
+This container can be used to create project releases. It encapsulates [semantic-release](https://semantic-release.gitbook.io/semantic-release) and all necessary plugins. See [package.json](package.json) for details. This is a npm application running in an alpine container.
 
 ## Usage
 
