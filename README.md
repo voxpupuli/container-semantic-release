@@ -8,33 +8,28 @@
 
 This container can be used to create project releases. It encapsulates semantic-release and all necessary plugins.
 
-## Development
+## Usage
 
-### How to generate package.json and package-lock.json
+### Gitlab
 
-```shell
-docker run --rm -it -v $PWD:/data --entrypoint sh node:22.8.0-alpine3.20
+This is a example to use this container in Gitlab.
+It requires, that you have:
 
-mkdir /npm
-cd /npm
+- A `.releaserc` file, written in YAML or JSON, with optional extensions: `.yaml` / `.yml` / `.json` / `.js` / `.cjs` / `.mjs`
+- A `release.config.(js|cjs|.mjs)` file that exports an object
+- A `release` key in the project's `package.json` file
 
-npm install \
-  semantic-release \
-  @bobvanderlinden/semantic-release-pull-request-analyzer \
-  @semantic-release/changelog \
-  @semantic-release/commit-analyzer \
-  @semantic-release/exec \
-  @semantic-release/git \
-  @semantic-release/github \
-  @semantic-release/gitlab \
-  @semantic-release/release-notes-generator \
-  semantic-release-commits-lint \
-  semantic-release-github-pullrequest \
-  semantic-release-jira-notes \
-  semantic-release-license \
-  semantic-release-major-tag \
-  semantic-release-pypi \
-  semantic-release-replace-plugin
-
-cp package.json package-lock.json /data
+```yaml
+---
+release:
+  stage: release
+  image:
+    name: ghcr.io/voxpupuli/semantic-release:latest
+    entrypoint: [""]  # overwrite entrypoint - gitlab-ci quirk
+  script:
+    - semantic-release
+  only:
+    - master
+    - main
+    - production
 ```

@@ -1,4 +1,13 @@
-FROM node:22.9.0-alpine3.20
+FROM node:22.8.0-alpine3.20 AS build
+
+WORKDIR /npm
+COPY package.json /npm
+
+RUN npm install
+
+###############################################################################
+
+FROM node:22.8.0-alpine3.20 AS final
 
 LABEL org.label-schema.maintainer="Voxpupuli Team <voxpupuli@groups.io>" \
       org.label-schema.vendor="Voxpupuli" \
@@ -9,21 +18,11 @@ LABEL org.label-schema.maintainer="Voxpupuli Team <voxpupuli@groups.io>" \
       org.label-schema.schema-version="1.0" \
       org.label-schema.dockerfile="/Dockerfile"
 
-RUN apk update \
-    && apk upgrade \
-    && apk add --no-cache --update git git-lfs openssh-client
+RUN apk update && apk upgrade \
+    && apk add --no-cache --update git git-lfs openssh-client bash
 
-# TODO: https://github.com/voxpupuli/container-semantic-release/issues/3
-# RUN addgroup -g 1001 release && adduser -G release -u 1001 -D semantic \
-#     && mkdir -p /npm /data \
-#     && chown -R semantic:release /npm /data
-# USER semantic
-
-WORKDIR /npm
 COPY Dockerfile /
-COPY package.json package-lock.json /npm/
-
-RUN npm ci
+COPY --from=build /npm /npm
 
 WORKDIR /data
 
