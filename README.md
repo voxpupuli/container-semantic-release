@@ -103,3 +103,20 @@ release:
     - main
     - production
 ```
+
+### Running as local user
+
+When using git+ssh remotes, you might encounter issues accessing your git server.
+
+This solution launches your local ssh-agent (if it's not already running) and adds your default SSH key. It then sets an environment variable within the container to locate the ssh-agent socket and bind-mounts the socket from your host system into the container, enabling secure access to your git server.
+
+```shell
+eval $(ssh-agent)
+ssh-add
+
+docker run -it --rm \
+  -e "SSH_AUTH_SOCK=/ssh-agent" \
+  -v $SSH_AUTH_SOCK:/ssh-agent \
+  -v $PWD:/data \
+  ghcr.io/voxpupuli/semantic-release:latest
+```
