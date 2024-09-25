@@ -49,13 +49,9 @@ plugins:
       groupBy: 'type'
       commitGroupsSort: 'title'
       commitsSort: 'header'
-    linkCompare: true
-    linkReferences: true
     parserOpts:
       # detect JIRA issues in merge commits
       issuePrefixes: ['SUP', 'BUG', 'FEATURE']
-      mergePattern: "^Merge branch '(.*)' into (.*)$"
-      mergeCorrespondence: ['branch_src', 'branch_dst']
       noteKeywords: ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
     presetConfig:
       issueUrlFormat: "https://jira.example.com/browse/{{prefix}}{{id}}"
@@ -73,11 +69,40 @@ plugins:
         - { type: 'test',     section: '🚥 Tests' }
 
   - path: '@semantic-release/changelog'
+    changelogFile: 'CHANGELOG.md'
+
   - path: '@semantic-release/git'
+    assets:
+      - 'CHANGELOG.md'
 
 verifyConditions:
   - '@semantic-release/changelog'
   - '@semantic-release/git'
+```
+
+### Update metadata.json of a Puppet module
+
+This refers to the example config from above...
+
+```yaml
+plugins:
+#...
+  - path: 'semantic-release-replace-plugin'
+    replacements:
+      - files: ['metadata.json']
+        from: "\"version\": \".*\""
+        to: "\"version\": \"${nextRelease.version}\""
+        countMatches: true
+        results:
+          - file: 'metadata.json'
+            hasChanged: true
+            numMatches: 1
+            numReplacements: 1
+#...
+  - path: '@semantic-release/git'
+    assets:
+      # ...
+      - 'metadata.json'
 ```
 
 ### Gitlab
