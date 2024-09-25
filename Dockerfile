@@ -24,6 +24,9 @@ RUN apk update && apk upgrade \
 COPY Dockerfile /
 COPY --from=build /npm /npm
 
+# fix ENOGITREPO Not running from a git repository.
+RUN git config --global --add safe.directory '*'
+
 WORKDIR /data
 
 ENV PATH="$PATH:/npm/node_modules/.bin"
