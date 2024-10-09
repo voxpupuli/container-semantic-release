@@ -18,17 +18,23 @@ LABEL org.label-schema.maintainer="Voxpupuli Team <voxpupuli@groups.io>" \
       org.label-schema.schema-version="1.0" \
       org.label-schema.dockerfile="/Dockerfile"
 
-RUN apk update && apk upgrade \
-    && apk add --no-cache --update git git-lfs openssh-client bash
-
 COPY Dockerfile /
+COPY docker-entrypoint.sh /
+COPY docker-entrypoint.d /docker-entrypoint.d
 COPY --from=build /npm /npm
+
+RUN apk update && apk upgrade \
+    && apk add --no-cache --update git git-lfs openssh-client bash jq \
+    && chmod +x /docker-entrypoint.sh /docker-entrypoint.d/*.sh
 
 # fix ENOGITREPO Not running from a git repository.
 RUN git config --global --add safe.directory '*'
 
 WORKDIR /data
 
+ENV CERT_JSON=""
 ENV PATH="$PATH:/npm/node_modules/.bin"
-ENTRYPOINT [ "semantic-release" ]
+ENV NODE_OPTIONS="--use-openssl-ca"
+
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
 CMD [ "--dry-run" ]

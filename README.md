@@ -75,6 +75,9 @@ plugins:
     assets:
       - 'CHANGELOG.md'
 
+  - path: '@intuit/semantic-release-slack'
+    fullReleaseNotes: true
+
 verifyConditions:
   - '@semantic-release/changelog'
   - '@semantic-release/git'
@@ -117,16 +120,21 @@ It requires, that you have:
 ```yaml
 ---
 release:
-  stage: release
+  stage: Release🚀
   image:
     name: ghcr.io/voxpupuli/semantic-release:latest
     entrypoint: [""]  # overwrite entrypoint - gitlab-ci quirk
+    pull_policy:
+      - always
+      - if-not-present
+  interruptible: true
   script:
+    - 'for f in /docker-entrypoint.d/*.sh; do echo "INFO: Running ${f}";"${f}";done'
     - semantic-release
-  only:
-    - master
-    - main
-    - production
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "production"
 ```
 
 ### Running as local user
