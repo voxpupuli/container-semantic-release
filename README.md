@@ -153,3 +153,42 @@ docker run -it --rm \
   -v $PWD:/data \
   ghcr.io/voxpupuli/semantic-release:latest
 ```
+
+### Notifing RocketChat
+
+There is a helper script in the container, which can send some data over curl to RocketChat.
+
+#### .releaserc.yaml
+
+```yaml
+---
+# ...
+plugins:
+# ...
+  - path: '@semantic-release/exec'
+    publishCmd: "/scripts/notify-rocketchat.sh v${nextRelease.version} '--insecure' 'debug'"
+# ...
+
+```
+
+
+#### .gitlab-ci.yml
+
+```yaml
+---
+release:
+# ...
+  variables:
+    ROCKETCHAT_NOTIFY_TOKEN: "Some hidden CI Variable to not expose the token"
+    ROCKETCHAT_EMOJI: ":tada:"
+    ROCKETCHAT_MESSAGE_TEXT: "A new tag for the project $CI_PROJECT_NAME was created by $GITLAB_USER_NAME"
+    ROCKETCHAT_HOOK_URL: "https://rocketchat.example.com/hooks/$ROCKETCHAT_NOTIFY_TOKEN"
+    ROCKETCHAT_TAG_URL: "${CI_PROJECT_URL}/-/tags"
+# ...
+```
+
+```
+15:07 🤖 bot-account:
+A new tag for the project dummy-module was created by Jon Doe.
+Release v1.2.3
+```

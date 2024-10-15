@@ -21,10 +21,11 @@ LABEL org.label-schema.maintainer="Voxpupuli Team <voxpupuli@groups.io>" \
 COPY Dockerfile /
 COPY docker-entrypoint.sh /
 COPY docker-entrypoint.d /docker-entrypoint.d
+COPY scripts /scripts
 COPY --from=build /npm /npm
 
 RUN apk update && apk upgrade \
-    && apk add --no-cache --update git git-lfs openssh-client bash jq \
+    && apk add --no-cache --update git git-lfs openssh-client bash jq curl \
     && chmod +x /docker-entrypoint.sh /docker-entrypoint.d/*.sh
 
 # fix ENOGITREPO Not running from a git repository.
@@ -35,6 +36,12 @@ WORKDIR /data
 ENV CERT_JSON=""
 ENV PATH="$PATH:/npm/node_modules/.bin"
 ENV NODE_OPTIONS="--use-openssl-ca"
+
+# The CI_* are empty, because docker does not know about them on build time.
+ENV ROCKETCHAT_EMOJI=":tada:"
+ENV ROCKETCHAT_MESSAGE_TEXT="A new tag for the project ${CI_PROJECT_NAME} was created by ${CI_COMMIT_AUTHOR}."
+ENV ROCKETCHAT_HOOK_URL="https://rocketchat.example.com/hooks/here_be_dragons"
+ENV ROCKETCHAT_TAG_URL="${CI_PROJECT_URL}/-/tags"
 
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 CMD [ "--dry-run" ]
