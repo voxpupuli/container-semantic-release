@@ -166,7 +166,7 @@ There is a helper script in the container, which can send some data over curl to
 plugins:
 # ...
   - path: '@semantic-release/exec'
-    publishCmd: "/scripts/notify-rocketchat.sh v${nextRelease.version} '--insecure' 'debug'"
+    publishCmd: "/scripts/notify-rocketchat.sh -V v${nextRelease.version} -o '--insecure' -d"
 # ...
 
 ```
