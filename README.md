@@ -24,7 +24,6 @@ The container has the following pre-defined enironment variables:
 | ROCKETCHAT_HOOK_URL     | `https://rocketchat.example.com/hooks/here_be_dragons` |
 | ROCKETCHAT_TAGS_URL     | `${CI_PROJECT_URL}/-/tags` |
 
-
 ### Example `.releaserc.yaml` for a Gitlab project
 
 ```yaml
