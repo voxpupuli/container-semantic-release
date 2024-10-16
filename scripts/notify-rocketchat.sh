@@ -31,6 +31,6 @@ if [[ -n ${ROCKETCHAT_HOOK_URL} ]]; then
   curl \
     -X POST \
     -H 'Content-Type: application/json' \
-    --data ${payload} \
+    --data "${payload}" \
     ${OPTIONS} ${ROCKETCHAT_HOOK_URL}
 fi
