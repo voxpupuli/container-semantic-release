@@ -6,9 +6,25 @@
 
 ## Introduction
 
-This container can be used to create project releases. It encapsulates [semantic-release](https://semantic-release.gitbook.io/semantic-release) and all necessary plugins. See [package.json](package.json) for details. This is a npm application running in an alpine container.
+This container can be used to create project releases.
+It encapsulates [semantic-release](https://semantic-release.gitbook.io/semantic-release) and all necessary plugins.
+See [package.json](package.json) for details. This is a npm application running in an alpine container.
 
 ## Usage
+
+### Variables
+
+The container has the following pre-defined environment variables:
+
+| Variable                | Default |
+|-------------------------|---------|
+| CERT_JSON               | no default |
+| PATH                    | `$PATH:/npm/node_modules/.bin` |
+| NODE_OPTIONS            | `--use-openssl-ca` |
+| ROCKETCHAT_EMOJI        | `:tada:` |
+| ROCKETCHAT_MESSAGE_TEXT | `A new tag for the project ${CI_PROJECT_NAME} was created by ${CI_COMMIT_AUTHOR}.` |
+| ROCKETCHAT_HOOK_URL     | `https://rocketchat.example.com/hooks/here_be_dragons` |
+| ROCKETCHAT_TAGS_URL     | `${CI_PROJECT_URL}/-/tags` |
 
 ### Example `.releaserc.yaml` for a Gitlab project
 
@@ -75,6 +91,9 @@ plugins:
     assets:
       - 'CHANGELOG.md'
 
+  - path: '@intuit/semantic-release-slack'
+    fullReleaseNotes: true
+
 verifyConditions:
   - '@semantic-release/changelog'
   - '@semantic-release/git'
@@ -117,16 +136,21 @@ It requires, that you have:
 ```yaml
 ---
 release:
-  stage: release
+  stage: Release🚀
   image:
     name: ghcr.io/voxpupuli/semantic-release:latest
     entrypoint: [""]  # overwrite entrypoint - gitlab-ci quirk
+    pull_policy:
+      - always
+      - if-not-present
+  interruptible: true
   script:
+    - 'for f in /docker-entrypoint.d/*.sh; do echo "INFO: Running ${f}";"${f}";done'
     - semantic-release
-  only:
-    - master
-    - main
-    - production
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "production"
 ```
 
 ### Running as local user
@@ -145,3 +169,74 @@ docker run -it --rm \
   -v $PWD:/data \
   ghcr.io/voxpupuli/semantic-release:latest
 ```
+
+### Notifing RocketChat
+
+There is a helper script in the container, which can send some data over curl to RocketChat.
+You need a RocketChat Hook link.
+
+#### script
+
+The script has the parameters `-V`, `-o` and `-d`.
+
+- `-V` specifies the version which should be announced.
+- `-o` can specify optional extra curl parameters. Like for example `--insecure`.
+- `-d` turn on debug output.
+
+The script accesses the environment Variables:
+
+- `ROCKETCHAT_EMOJI`
+- `ROCKETCHAT_MESSAGE_TEXT`
+- `ROCKETCHAT_TAGS_URL`
+- `ROCKETCHAT_HOOK_URL`
+
+#### .releaserc.yaml
+
+```yaml
+---
+# ...
+plugins:
+# ...
+  - path: '@semantic-release/exec'
+    publishCmd: "/scripts/notify-rocketchat.sh -V v${nextRelease.version} -o '--insecure' -d"
+# ...
+
+```
+
+#### .gitlab-ci.yml
+
+```yaml
+---
+release:
+# ...
+  variables:
+    ROCKETCHAT_NOTIFY_TOKEN: "Some hidden CI Variable to not expose the token"
+    ROCKETCHAT_EMOJI: ":tada:"
+    ROCKETCHAT_MESSAGE_TEXT: "A new tag for the project ${CI_PROJECT_NAME} was created by ${GITLAB_USER_NAME}"
+    ROCKETCHAT_HOOK_URL: "https://rocketchat.example.com/hooks/${ROCKETCHAT_NOTIFY_TOKEN}"
+    ROCKETCHAT_TAGS_URL: "${CI_PROJECT_URL}/-/tags"
+# ...
+```
+
+```text
+15:07 🤖 bot-account:
+A new tag for the project dummy-module was created by Jon Doe.
+Release v1.2.3
+```
+
+### Adding additional certificates to the container
+
+If you somehow need own certificates inside the container, you can add them over the entrypoint script.
+
+For example: you want to run the a webhook on a target with your own ca certificates.
+Export the `CERT_JSON` and the container will import it on runtime.
+It is expected that the certificates are a json hash of PEM certificates.
+It is preferable that the json is uglified into a onliner.
+
+You may add this as a CI Variable for your runners on Github/Gitlab.
+
+```json
+{"certificates":{"root_ca":"-----BEGIN CERTIFICATE-----\n...","signing_ca":"-----BEGIN CERTIFICATE-----\n..."}}
+```
+
+For more details have a look at [docker-entrypoint.sh](docker-entrypoint.sh) and [docker-entrypoint.d](docker-entrypoint.d/).
