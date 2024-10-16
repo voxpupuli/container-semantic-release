@@ -9,12 +9,7 @@ do
     esac
 done
 
-
-if [ "${DEBUG}" == 1 ]; then
-echo "Version is: ${VERSION}"
-echo "Options are: ${OPTIONS}"
-echo "Payload is:"
-echo "{
+payload="{
       \"emoji\": \"${ROCKETCHAT_EMOJI}\",
       \"text\": \"${ROCKETCHAT_MESSAGE_TEXT}\",
       \"attachments\": [
@@ -24,20 +19,18 @@ echo "{
         }
       ]
     }"
+
+if [ "${DEBUG}" == 1 ]; then
+echo "Version is: ${VERSION}"
+echo "Options are: ${OPTIONS}"
+echo "Payload is:"
+echo "${payload}"
 fi
 
-if [ -n ${ROCKETCHAT_HOOK_URL} ]; then
+if [[ -n ${ROCKETCHAT_HOOK_URL} ]]; then
   curl \
     -X POST \
     -H 'Content-Type: application/json' \
-    --data "{
-      \"emoji\": \"${ROCKETCHAT_EMOJI}\",
-      \"text\": \"${ROCKETCHAT_MESSAGE_TEXT}\",
-      \"attachments\": [
-        {
-          \"title\": \"Release ${VERSION}\",
-          \"title_link\": \"${ROCKETCHAT_TAGS_URL}/${VERSION}\"
-        }
-      ]
-    }" ${OPTIONS} ${ROCKETCHAT_HOOK_URL}
+    --data ${payload} \
+    ${OPTIONS} ${ROCKETCHAT_HOOK_URL}
 fi
