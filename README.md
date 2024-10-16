@@ -10,6 +10,21 @@ This container can be used to create project releases. It encapsulates [semantic
 
 ## Usage
 
+### Variables
+
+The container has the following pre-defined enironment variables:
+
+| Variable                | Default |
+|-------------------------|---------|
+| CERT_JSON               | no default |
+| PATH                    | `$PATH:/npm/node_modules/.bin` |
+| NODE_OPTIONS            | `--use-openssl-ca` |
+| ROCKETCHAT_EMOJI        | `:tada:` |
+| ROCKETCHAT_MESSAGE_TEXT | `A new tag for the project ${CI_PROJECT_NAME} was created by ${CI_COMMIT_AUTHOR}.` |
+| ROCKETCHAT_HOOK_URL     | `https://rocketchat.example.com/hooks/here_be_dragons` |
+| ROCKETCHAT_TAGS_URL     | `${CI_PROJECT_URL}/-/tags` |
+
+
 ### Example `.releaserc.yaml` for a Gitlab project
 
 ```yaml
@@ -157,6 +172,21 @@ docker run -it --rm \
 ### Notifing RocketChat
 
 There is a helper script in the container, which can send some data over curl to RocketChat.
+You need a RocketChat Hook link.
+
+#### script
+
+The script has the parameters `-V`, `-o` and `-d`.
+- `-V` specifies the version which should be announced.
+- `-o` can specify optional extra curl parameters. Like for example `--insecure`.
+- `-d` turn on debug output.
+
+The script accesses the environment Variables:
+
+- `ROCKETCHAT_EMOJI`
+- `ROCKETCHAT_MESSAGE_TEXT`
+- `ROCKETCHAT_TAGS_URL`
+- `ROCKETCHAT_HOOK_URL`
 
 #### .releaserc.yaml
 
@@ -181,9 +211,9 @@ release:
   variables:
     ROCKETCHAT_NOTIFY_TOKEN: "Some hidden CI Variable to not expose the token"
     ROCKETCHAT_EMOJI: ":tada:"
-    ROCKETCHAT_MESSAGE_TEXT: "A new tag for the project $CI_PROJECT_NAME was created by $GITLAB_USER_NAME"
-    ROCKETCHAT_HOOK_URL: "https://rocketchat.example.com/hooks/$ROCKETCHAT_NOTIFY_TOKEN"
-    ROCKETCHAT_TAG_URL: "${CI_PROJECT_URL}/-/tags"
+    ROCKETCHAT_MESSAGE_TEXT: "A new tag for the project ${CI_PROJECT_NAME} was created by ${GITLAB_USER_NAME}"
+    ROCKETCHAT_HOOK_URL: "https://rocketchat.example.com/hooks/${ROCKETCHAT_NOTIFY_TOKEN}"
+    ROCKETCHAT_TAGS_URL: "${CI_PROJECT_URL}/-/tags"
 # ...
 ```
 
@@ -192,3 +222,20 @@ release:
 A new tag for the project dummy-module was created by Jon Doe.
 Release v1.2.3
 ```
+
+### Adding addional certificates to the container
+
+If you somehow need own certificates inside the container, you can add them over the entrypoint script.
+
+For example: you want to run the a webhook on a target with your own ca certificates.
+Export the `CERT_JSON` and the container will import it on runtime.
+It is expected that the certificates are a json hash of PEM certificates.
+It is prefferable that the json is uglyfied into a onliner.
+
+You may add this as a CI Variable for your runners on Github/Gitlab.
+
+```json
+{"certificates":{"root_ca":"-----BEGIN CERTIFICATE-----\n...","signing_ca":"-----BEGIN CERTIFICATE-----\n..."}}
+```
+
+For more details have a look at [docker-entrypoint.sh](docker-entrypoint.sh) and [docker-entrypoint.d](docker-entrypoint.d/).
