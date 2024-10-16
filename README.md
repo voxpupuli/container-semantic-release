@@ -199,8 +199,6 @@ plugins:
 # ...
 
 ```
-
-
 #### .gitlab-ci.yml
 
 ```yaml
