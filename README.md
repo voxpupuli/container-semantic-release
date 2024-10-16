@@ -6,13 +6,15 @@
 
 ## Introduction
 
-This container can be used to create project releases. It encapsulates [semantic-release](https://semantic-release.gitbook.io/semantic-release) and all necessary plugins. See [package.json](package.json) for details. This is a npm application running in an alpine container.
+This container can be used to create project releases.
+It encapsulates [semantic-release](https://semantic-release.gitbook.io/semantic-release) and all necessary plugins.
+See [package.json](package.json) for details. This is a npm application running in an alpine container.
 
 ## Usage
 
 ### Variables
 
-The container has the following pre-defined enironment variables:
+The container has the following pre-defined environment variables:
 
 | Variable                | Default |
 |-------------------------|---------|
@@ -176,6 +178,7 @@ You need a RocketChat Hook link.
 #### script
 
 The script has the parameters `-V`, `-o` and `-d`.
+
 - `-V` specifies the version which should be announced.
 - `-o` can specify optional extra curl parameters. Like for example `--insecure`.
 - `-d` turn on debug output.
@@ -199,6 +202,7 @@ plugins:
 # ...
 
 ```
+
 #### .gitlab-ci.yml
 
 ```yaml
@@ -214,20 +218,20 @@ release:
 # ...
 ```
 
-```
+```text
 15:07 🤖 bot-account:
 A new tag for the project dummy-module was created by Jon Doe.
 Release v1.2.3
 ```
 
-### Adding addional certificates to the container
+### Adding additional certificates to the container
 
 If you somehow need own certificates inside the container, you can add them over the entrypoint script.
 
 For example: you want to run the a webhook on a target with your own ca certificates.
 Export the `CERT_JSON` and the container will import it on runtime.
 It is expected that the certificates are a json hash of PEM certificates.
-It is prefferable that the json is uglyfied into a onliner.
+It is preferable that the json is uglified into a onliner.
 
 You may add this as a CI Variable for your runners on Github/Gitlab.
 
