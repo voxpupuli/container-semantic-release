@@ -41,7 +41,7 @@ ENV NODE_OPTIONS="--use-openssl-ca"
 ENV ROCKETCHAT_EMOJI=":tada:"
 ENV ROCKETCHAT_MESSAGE_TEXT="A new tag for the project ${CI_PROJECT_NAME} was created by ${CI_COMMIT_AUTHOR}."
 ENV ROCKETCHAT_HOOK_URL="https://rocketchat.example.com/hooks/here_be_dragons"
-ENV ROCKETCHAT_TAG_URL="${CI_PROJECT_URL}/-/tags"
+ENV ROCKETCHAT_TAGS_URL="${CI_PROJECT_URL}/-/tags"
 
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 CMD [ "--dry-run" ]

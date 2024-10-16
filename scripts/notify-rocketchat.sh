@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts V:od flag
+while getopts V:o:d flag
 do
     case "${flag}" in
         V) VERSION=${OPTARG};;
@@ -20,7 +20,7 @@ echo "{
       \"attachments\": [
         {
           \"title\": \"Release ${VERSION}\",
-          \"title_link\": \"${ROCKETCHAT_TAG_URL}/${VERSION}\"
+          \"title_link\": \"${ROCKETCHAT_TAGS_URL}/${VERSION}\"
         }
       ]
     }"
@@ -36,7 +36,7 @@ if [ -n ${ROCKETCHAT_HOOK_URL} ]; then
       \"attachments\": [
         {
           \"title\": \"Release ${VERSION}\",
-          \"title_link\": \"${ROCKETCHAT_TAG_URL}/${VERSION}\"
+          \"title_link\": \"${ROCKETCHAT_TAGS_URL}/${VERSION}\"
         }
       ]
     }" ${OPTIONS} ${ROCKETCHAT_HOOK_URL}
