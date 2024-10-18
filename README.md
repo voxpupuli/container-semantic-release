@@ -38,7 +38,6 @@ branches:
 ci: true
 debug: true
 dryRun: false
-tagFormat: '${version}'
 preset: 'conventionalcommits'
 
 gitlabUrl: 'https://gitlab.example.com'
@@ -73,7 +72,7 @@ plugins:
       issueUrlFormat: "https://jira.example.com/browse/{{prefix}}{{id}}"
       types:
         - { type: 'build',    section: '👷 Build' }
-        - { type: 'chore',    section: '🧹 Chorses' }
+        - { type: 'chore',    section: '🧹 Chores' }
         - { type: 'ci',       section: '🚦 CI/CD' }
         - { type: 'dep',      section: '👾 Dependencies' }
         - { type: 'docs',     section: '📚 Docs' }
@@ -90,9 +89,6 @@ plugins:
   - path: '@semantic-release/git'
     assets:
       - 'CHANGELOG.md'
-
-  - path: '@intuit/semantic-release-slack'
-    fullReleaseNotes: true
 
 verifyConditions:
   - '@semantic-release/changelog'
@@ -170,12 +166,12 @@ docker run -it --rm \
   ghcr.io/voxpupuli/semantic-release:latest
 ```
 
-### Notifing RocketChat
+### Notifying RocketChat
 
 There is a helper script in the container, which can send some data over curl to RocketChat.
 You need a RocketChat Hook link.
 
-#### script
+#### Script
 
 The script has the parameters `-V`, `-o` and `-d`.
 
