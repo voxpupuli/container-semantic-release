@@ -43,5 +43,11 @@ ENV ROCKETCHAT_MESSAGE_TEXT="A new tag for the project ${CI_PROJECT_NAME} was cr
 ENV ROCKETCHAT_HOOK_URL="https://rocketchat.example.com/hooks/here_be_dragons"
 ENV ROCKETCHAT_TAGS_URL="${CI_PROJECT_URL}/-/tags"
 
+ENV MATTERMOST_EMOJI=":tada:"
+ENV MATTERMOST_USERNAME="Semantic Release"
+ENV MATTERMOST_MESSAGE_TEXT="A new tag for the project ${CI_PROJECT_NAME} was created by ${CI_COMMIT_AUTHOR}."
+ENV MATTERMOST_HOOK_URL="https://mattermost.example.com/hooks/here_be_dragons"
+ENV MATTERMOST_TAGS_URL="${CI_PROJECT_URL}/-/tags"
+
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 CMD [ "--dry-run" ]
