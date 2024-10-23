@@ -146,8 +146,7 @@ release:
       - if-not-present
   interruptible: true
   script:
-    - 'for f in /docker-entrypoint.d/*.sh; do echo "INFO: Running ${f}";"${f}";done'
-    - semantic-release
+    - /docker-entrypoint.sh
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
     - if: $CI_COMMIT_BRANCH == "main"
