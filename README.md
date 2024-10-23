@@ -25,6 +25,11 @@ The container has the following pre-defined environment variables:
 | ROCKETCHAT_MESSAGE_TEXT | `A new tag for the project ${CI_PROJECT_NAME} was created by ${CI_COMMIT_AUTHOR}.` |
 | ROCKETCHAT_HOOK_URL     | `https://rocketchat.example.com/hooks/here_be_dragons` |
 | ROCKETCHAT_TAGS_URL     | `${CI_PROJECT_URL}/-/tags` |
+| MATTERMOST_EMOJI        | `:tada:` |
+| MATTERMOST_MESSAGE_TEXT | `A new tag for the project ${CI_PROJECT_NAME} was created by ${CI_COMMIT_AUTHOR}.` |
+| MATTERMOST_HOOK_URL     | `https://mattermost.example.com/hooks/here_be_dragons` |
+| MATTERMOST_TAGS_URL     | `${CI_PROJECT_URL}/-/tags` |
+| MATTERMOST_USERNAME     | `Semantic Release` |
 
 ### Example `.releaserc.yaml` for a Gitlab project
 
@@ -141,8 +146,7 @@ release:
       - if-not-present
   interruptible: true
   script:
-    - 'for f in /docker-entrypoint.d/*.sh; do echo "INFO: Running ${f}";"${f}";done'
-    - semantic-release
+    - /docker-entrypoint.sh
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
     - if: $CI_COMMIT_BRANCH == "main"
@@ -166,12 +170,12 @@ docker run -it --rm \
   ghcr.io/voxpupuli/semantic-release:latest
 ```
 
-### Notifying RocketChat
+### Notifying
+
+#### RocketChat
 
 There is a helper script in the container, which can send some data over curl to RocketChat.
-You need a RocketChat Hook link.
-
-#### Script
+You need a RocketChat hook link.
 
 The script has the parameters `-V`, `-o` and `-d`.
 
@@ -179,12 +183,31 @@ The script has the parameters `-V`, `-o` and `-d`.
 - `-o` can specify optional extra curl parameters. Like for example `--insecure`.
 - `-d` turn on debug output.
 
-The script accesses the environment Variables:
+The script accesses the environment variables:
 
 - `ROCKETCHAT_EMOJI`
 - `ROCKETCHAT_MESSAGE_TEXT`
 - `ROCKETCHAT_TAGS_URL`
 - `ROCKETCHAT_HOOK_URL`
+
+#### Mattermost
+
+There is a helper script in the container, which can send some data over curl to Mattermost.
+You need a Mattermost hook link.
+
+The script has the parameters `-V`, `-o` and `-d`.
+
+- `-V` specifies the version which should be announced.
+- `-o` can specify optional extra curl parameters. Like for example `--insecure`.
+- `-d` turn on debug output.
+
+The script accesses the environment variables:
+
+- `MATTERMOST_EMOJI`
+- `MATTERMOST_MESSAGE_TEXT`
+- `MATTERMOST_TAGS_URL`
+- `MATTERMOST_HOOK_URL`
+- `MATTERMOST_USERNAME`
 
 #### .releaserc.yaml
 
@@ -192,9 +215,13 @@ The script accesses the environment Variables:
 ---
 # ...
 plugins:
+# Most people will choose between one of those two:
 # ...
   - path: '@semantic-release/exec'
     publishCmd: "/scripts/notify-rocketchat.sh -V v${nextRelease.version} -o '--insecure' -d"
+# ...
+  - path: '@semantic-release/exec'
+    publishCmd: "/scripts/notify-mattermost.sh -V v${nextRelease.version} -o '--insecure' -d"
 # ...
 
 ```
@@ -204,6 +231,7 @@ plugins:
 ```yaml
 ---
 release:
+# Most people will choose between one of those two:
 # ...
   variables:
     ROCKETCHAT_NOTIFY_TOKEN: "Some hidden CI Variable to not expose the token"
@@ -211,6 +239,13 @@ release:
     ROCKETCHAT_MESSAGE_TEXT: "A new tag for the project ${CI_PROJECT_NAME} was created by ${GITLAB_USER_NAME}"
     ROCKETCHAT_HOOK_URL: "https://rocketchat.example.com/hooks/${ROCKETCHAT_NOTIFY_TOKEN}"
     ROCKETCHAT_TAGS_URL: "${CI_PROJECT_URL}/-/tags"
+# ...
+    MATTERMOST_NOTIFY_TOKEN: "Some hidden CI Variable to not expose the token"
+    MATTERMOST_EMOJI: ":tada:"
+    MATTERMOST_MESSAGE_TEXT: "A new tag for the project ${CI_PROJECT_NAME} was created by ${GITLAB_USER_NAME}"
+    MATTERMOST_HOOK_URL: "https://mattermost.example.com/hooks/${MATTERMOST_NOTIFY_TOKEN}"
+    MATTERMOST_TAGS_URL: "${CI_PROJECT_URL}/-/tags"
+    MATTERMOST_USERNAME: "Semantic Release [Bot]"
 # ...
 ```
 
