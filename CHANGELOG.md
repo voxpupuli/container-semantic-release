@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.1.0](https://github.com/voxpupuli/container-semantic-release/tree/v1.1.0) (2024-10-23)
+
+[Full Changelog](https://github.com/voxpupuli/container-semantic-release/compare/v1.0.0...v1.1.0)
+
+**Implemented enhancements:**
+
+- feat: add mattermost notification [\#31](https://github.com/voxpupuli/container-semantic-release/pull/31) ([rwaffen](https://github.com/rwaffen))
+- feat: Add RocketChat notification script and a way to add additional ca certificates [\#24](https://github.com/voxpupuli/container-semantic-release/pull/24) ([rwaffen](https://github.com/rwaffen))
+- fix: prevent ENOGITREPO [\#19](https://github.com/voxpupuli/container-semantic-release/pull/19) ([rwaffen](https://github.com/rwaffen))
+
+**Merged pull requests:**
+
+- build\(deps\): Bump semantic-release-pypi from 3.0.2 to 4.0.1 [\#30](https://github.com/voxpupuli/container-semantic-release/pull/30) ([dependabot[bot]](https://github.com/apps/dependabot))
+- doc: use tagFormat default of v1.2.3, remove not needed slack plugin, fix spelling [\#29](https://github.com/voxpupuli/container-semantic-release/pull/29) ([rwaffen](https://github.com/rwaffen))
+- build\(deps\): Bump node from 22.9.0-alpine3.20 to 23.0.0-alpine3.20 [\#26](https://github.com/voxpupuli/container-semantic-release/pull/26) ([dependabot[bot]](https://github.com/apps/dependabot))
+- doc: add how to update a metadata.json, also update general example config [\#22](https://github.com/voxpupuli/container-semantic-release/pull/22) ([rwaffen](https://github.com/rwaffen))
+- build\(deps\): Bump @semantic-release/github from 10.3.5 to 11.0.0 [\#21](https://github.com/voxpupuli/container-semantic-release/pull/21) ([dependabot[bot]](https://github.com/apps/dependabot))
+- doc: add info on how to run locally with git+ssh remotes [\#20](https://github.com/voxpupuli/container-semantic-release/pull/20) ([rwaffen](https://github.com/rwaffen))
+- build\(deps\): Bump node from 22.8.0-alpine3.20 to 22.9.0-alpine3.20 [\#18](https://github.com/voxpupuli/container-semantic-release/pull/18) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v1.0.0](https://github.com/voxpupuli/container-semantic-release/tree/v1.0.0) (2024-09-24)
 
 [Full Changelog](https://github.com/voxpupuli/container-semantic-release/compare/73e08a4630f0436542ca43350e61bbd698cba22d...v1.0.0)
