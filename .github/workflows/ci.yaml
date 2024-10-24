@@ -8,21 +8,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  shellcheck:
-    name: 'Shell Check'
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Differential ShellCheck
-      uses: redhat-plumbers-in-action/differential-shellcheck@v5
-      with:
-        scan-directory: |
-          ./docker-entrypoint.d/
-          ./scripts/
-        token: ${{ secrets.GITHUB_TOKEN }}
-
-
+  general_ci:
+    uses: voxpupuli/crafty/.github/workflows/general_ci.yaml@main
+    with:
+      shellcheck_scan_dir: '.'
 
   build_test_container:
     name: 'Build test container'
