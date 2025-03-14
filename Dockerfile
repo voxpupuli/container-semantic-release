@@ -1,4 +1,4 @@
-FROM node:23.4.0-alpine3.20 AS build
+FROM node:23.9.0-alpine3.20 AS build
 
 WORKDIR /npm
 COPY package.json /npm
@@ -7,7 +7,7 @@ RUN npm install
 
 ###############################################################################
 
-FROM node:23.4.0-alpine3.20 AS final
+FROM node:23.9.0-alpine3.20 AS final
 
 LABEL org.label-schema.maintainer="Voxpupuli Team <voxpupuli@groups.io>" \
       org.label-schema.vendor="Voxpupuli" \
