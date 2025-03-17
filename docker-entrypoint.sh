@@ -3,9 +3,9 @@
 
 set -e
 
-for f in /docker-entrypoint.d/*.sh; do
-    echo "INFO: Running $f"
-    "$f"
-done
+if [ -d /docker-entrypoint.d/ ]; then
+    find /docker-entrypoint.d/ -type f -name "*.sh" \
+        -exec echo Running {} \; -exec bash {} \;
+fi
 
 exec /npm/node_modules/.bin/semantic-release "$@"

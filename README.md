@@ -163,11 +163,13 @@ This solution launches your local ssh-agent (if it's not already running) and ad
 eval $(ssh-agent)
 ssh-add
 
-docker run -it --rm \
-  -e "SSH_AUTH_SOCK=/ssh-agent" \
-  -v $SSH_AUTH_SOCK:/ssh-agent \
-  -v $PWD:/data \
-  ghcr.io/voxpupuli/semantic-release:latest
+podman run -it --rm \
+  -v $PWD:/data:Z \
+  -v ~/.gitconfig:/etc/gitconfig:Z \
+  -v ~/.ssh:/root/.ssh:Z \
+  -v ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK} \
+  -e SSH_AUTH_SOCK="${SSH_AUTH_SOCK}" \
+  ghcr.io/voxpupuli/semantic-release:latest --dry-run --no-ci
 ```
 
 ### Notifying
