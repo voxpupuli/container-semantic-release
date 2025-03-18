@@ -174,8 +174,11 @@ podman run -it --rm \
 
 ### Work on a branch and create GitLab MR
 
-Sometimes you are not allowed to run in the CI and maybe want to do all steps locally and just push and tag automatically from your machine. This will configure SR to work only on a branch called `release`. Though SR checks remote branches in the repository, the idea here is, to get latest `main`, create `release` and push the empty branch. SR will then pick up from here.
-Do the commit and tag on your local and push it to the remote branch and open a MR for it.
+Sometimes you are not allowed to run in the CI and maybe want to do all steps locally and just push and tag automatically from your machine.
+This will configure SR to work only on a branch called `release`.
+Though SR checks remote branches in the repository, the idea here is to get latest `main`, create `release` and push the empty branch.
+When running SR locally it will then pick up from here.
+It will co the commit and tag on your local and push it to the remote branch and open a MR for it.
 
 `.releaserc`
 
