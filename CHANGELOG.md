@@ -2,7 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
-## [v1.1.0](https://github.com/voxpupuli/container-semantic-release/tree/v1.1.0) (2024-10-23)
+## [v1.2.0](https://github.com/voxpupuli/container-semantic-release/tree/v1.2.0) (2025-03-18)
+
+[Full Changelog](https://github.com/voxpupuli/container-semantic-release/compare/v1.1.0...v1.2.0)
+
+**Implemented enhancements:**
+
+- feat: update alpine [\#50](https://github.com/voxpupuli/container-semantic-release/pull/50) ([rwaffen](https://github.com/rwaffen))
+- fix: improve docu and code to run/build SR locally [\#49](https://github.com/voxpupuli/container-semantic-release/pull/49) ([rwaffen](https://github.com/rwaffen))
+
+**Merged pull requests:**
+
+- build\(deps\): Bump node from 23.9.0-alpine3.20 to 23.10.0-alpine3.20 [\#48](https://github.com/voxpupuli/container-semantic-release/pull/48) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): Bump node from 23.4.0-alpine3.20 to 23.9.0-alpine3.20 [\#46](https://github.com/voxpupuli/container-semantic-release/pull/46) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): Bump @semantic-release/exec from 6.0.3 to 7.0.3 [\#43](https://github.com/voxpupuli/container-semantic-release/pull/43) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): Bump node from 23.3.0-alpine3.20 to 23.4.0-alpine3.20 [\#37](https://github.com/voxpupuli/container-semantic-release/pull/37) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): Bump node from 23.2.0-alpine3.20 to 23.3.0-alpine3.20 [\#36](https://github.com/voxpupuli/container-semantic-release/pull/36) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): Bump node from 23.1.0-alpine3.20 to 23.2.0-alpine3.20 [\#35](https://github.com/voxpupuli/container-semantic-release/pull/35) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): Bump node from 23.0.0-alpine3.20 to 23.1.0-alpine3.20 [\#34](https://github.com/voxpupuli/container-semantic-release/pull/34) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [v1.1.0](https://github.com/voxpupuli/container-semantic-release/tree/v1.1.0) (2024-10-24)
 
 [Full Changelog](https://github.com/voxpupuli/container-semantic-release/compare/v1.0.0...v1.1.0)
 
