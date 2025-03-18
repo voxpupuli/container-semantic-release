@@ -172,6 +172,44 @@ podman run -it --rm \
   ghcr.io/voxpupuli/semantic-release:latest --dry-run --no-ci
 ```
 
+### Work on a branch and create GitLab MR
+
+Sometimes you are not allowed to run in the CI and maybe want to do all steps locally and just push and tag automatically from your machine. This will configure SR to work only on a branch called `release`. Though SR checks remote branches in the repository, the idea here is, to get latest `main`, create `release` and push the empty branch. SR will then pick up from here.
+Do the commit and tag on your local and push it to the remote branch and open a MR for it.
+
+`.releaserc`
+
+```yaml
+---
+branches:
+ - 'release'
+
+# ...
+
+plugins:
+# ...
+  - path: '@semantic-release/exec'
+    publishCmd: "/scripts/gitlab-merge-request.sh \"${config.gitlabUrl}${config.gitlabApiPathPrefix}\" \"Release v${nextRelease.version}\" \"${process.env.PROJECT}\" \"${process.env.GL_TOKEN}\""
+```
+
+Terminal
+
+```shell
+cd dummy-project
+
+git pull -r origin main
+git switch -c release
+git push origin HEAD
+
+podman run -it --rm \
+  -v $PWD:/data:Z \
+  -v ~/.gitconfig:/etc/gitconfig:Z \
+  -v ~/.ssh:/root/.ssh:Z \
+  -e GL_TOKEN="token_MC_TOKEN_face" \
+  -e PROJECT=$(basename $PWD) \
+  ghcr.io/voxpupuli/semantic-release:latest --no-ci
+```
+
 ### Notifying
 
 #### RocketChat
