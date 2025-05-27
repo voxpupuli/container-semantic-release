@@ -1,4 +1,4 @@
-FROM docker.io/library/node:24.0.2-alpine3.21 AS build
+FROM docker.io/library/node:24.1.0-alpine3.21 AS build
 
 WORKDIR /npm
 COPY package.json /npm
@@ -7,7 +7,7 @@ RUN npm install
 
 ###############################################################################
 
-FROM docker.io/library/node:24.0.2-alpine3.21 AS final
+FROM docker.io/library/node:24.1.0-alpine3.21 AS final
 
 LABEL org.label-schema.maintainer="Voxpupuli Team <voxpupuli@groups.io>" \
       org.label-schema.vendor="Voxpupuli" \
