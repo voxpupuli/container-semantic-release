@@ -12,6 +12,27 @@ See [package.json](package.json) for details. This is a npm application running 
 
 ## Usage
 
+Main tools in the container:
+
+- conventional-changelog
+- semantic-release
+- standard-version
+
+for more information see the [`package.json`](package.json)
+
+### Running the tools
+
+```shell
+# semantic-release is the default entrypoint
+podman run -it --rm -v $PWD:/data:Z ghcr.io/voxpupuli/semantic-release:latest
+
+# run standard-version
+podman run -it --rm -v $PWD:/data:Z --entrypoint standard-version ghcr.io/voxpupuli/semantic-release:latest -r v2.0.0 --skip.commit --skip.tag
+
+# run conventional-changelog
+podman run -it --rm -v $PWD:/data:Z --entrypoint conventional-changelog ghcr.io/voxpupuli/semantic-release:latest -p angular -i CHANGELOG.md
+```
+
 ### Variables
 
 The container has the following pre-defined environment variables:
@@ -31,7 +52,9 @@ The container has the following pre-defined environment variables:
 | MATTERMOST_TAGS_URL     | `${CI_PROJECT_URL}/-/tags` |
 | MATTERMOST_USERNAME     | `Semantic Release` |
 
-### Example `.releaserc.yaml` for a Gitlab project
+### Example `.releaserc.yaml`
+
+This is an example configuration file for a project using semantic-release.
 
 ```yaml
 ---
@@ -85,7 +108,7 @@ plugins:
         - { type: 'fix',      section: '🛠️ Fixes' }
         - { type: 'perf',     section: '⏩ Performance' }
         - { type: 'refactor', section: '🔨 Refactor' }
-        - { type: 'revert',   section: '🙅‍♂️ Reverts' }
+        - { type: 'revert',   section: '🙅 Reverts' }
         - { type: 'test',     section: '🚥 Tests' }
 
   - path: '@semantic-release/changelog'
@@ -98,6 +121,28 @@ plugins:
 verifyConditions:
   - '@semantic-release/changelog'
   - '@semantic-release/git'
+```
+
+### Example `.versionrc.json`
+
+This is an example configuration file for a project using standard-version.
+
+```json
+{
+  "types": [
+    { "type": "build",    "section": "👷 Build" },
+    { "type": "chore",    "section": "🧹 Chores" },
+    { "type": "ci",       "section": "🚦 CI/CD" },
+    { "type": "dep",      "section": "👾 Dependencies" },
+    { "type": "docs",     "section": "📚 Docs" },
+    { "type": "feat",     "section": "🚀 Features" },
+    { "type": "fix",      "section": "🛠️ Fixes" },
+    { "type": "perf",     "section": "⏩ Performance" },
+    { "type": "refactor", "section": "🔨 Refactor" },
+    { "type": "revert",   "section": "🙅 Reverts" },
+    { "type": "test",     "section": "🚥 Tests" }
+  ]
+}
 ```
 
 ### Update metadata.json of a Puppet module
