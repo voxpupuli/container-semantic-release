@@ -202,7 +202,9 @@ release:
 
 When using git+ssh remotes, you might encounter issues accessing your git server.
 
-This solution launches your local ssh-agent (if it's not already running) and adds your default SSH key. It then sets an environment variable within the container to locate the ssh-agent socket and bind-mounts the socket from your host system into the container, enabling secure access to your git server.
+This solution launches your local ssh-agent (if it's not already running) and adds your default SSH key.
+It then sets an environment variable within the container to locate the ssh-agent socket.
+It also bind-mounts the socket from your host system into the container, enabling secure access to your git server.
 
 ```shell
 eval $(ssh-agent)
