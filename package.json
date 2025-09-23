@@ -15,7 +15,7 @@
     "semantic-release-jira-notes": "^4.0.0",
     "semantic-release-license": "^1.0.3",
     "semantic-release-major-tag": "^0.3.2",
-    "semantic-release-pypi": "^4.0.1",
+    "semantic-release-pypi": "^5.0.0",
     "semantic-release-replace-plugin": "^1.2.7",
     "semantic-release": "^24.1.1",
     "standard-version": "^9.5.0"
