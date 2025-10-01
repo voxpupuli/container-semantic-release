@@ -9,6 +9,9 @@ on:
       - '*'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build-and-push-container:
     runs-on: ubuntu-latest
