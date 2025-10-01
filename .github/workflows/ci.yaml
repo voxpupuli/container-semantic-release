@@ -7,6 +7,9 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   general_ci:
     uses: voxpupuli/crafty/.github/workflows/general_ci.yaml@main
