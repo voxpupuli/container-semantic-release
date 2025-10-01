@@ -1,5 +1,5 @@
 ---
-name: CI🚦
+name: 🚦 CI / Test Container Build
 
 on:
   pull_request:
@@ -11,13 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  general_ci:
-    uses: voxpupuli/crafty/.github/workflows/general_ci.yaml@main
-    with:
-      shellcheck_scan_dir: '.'
-
   build_test_container:
-    name: 'Build test container'
+    name: 'Build Test Container'
     runs-on: ubuntu-latest
     permissions:
       actions: read
