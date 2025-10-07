@@ -16,7 +16,7 @@ Main tools in the container:
 
 - conventional-changelog
 - semantic-release
-- standard-version
+- commit-and-tag-version
 
 for more information see the [`package.json`](package.json)
 
@@ -26,8 +26,8 @@ for more information see the [`package.json`](package.json)
 # semantic-release is the default entrypoint
 podman run -it --rm -v $PWD:/data:Z ghcr.io/voxpupuli/semantic-release:latest
 
-# run standard-version
-podman run -it --rm -v $PWD:/data:Z --entrypoint standard-version ghcr.io/voxpupuli/semantic-release:latest -r v2.0.0 --skip.commit --skip.tag
+# run commit-and-tag-version
+podman run -it --rm -v $PWD:/data:Z --entrypoint commit-and-tag-version ghcr.io/voxpupuli/semantic-release:latest -r v2.0.0 --skip.commit --skip.tag
 
 # run conventional-changelog
 podman run -it --rm -v $PWD:/data:Z --entrypoint conventional-changelog ghcr.io/voxpupuli/semantic-release:latest -p angular -i CHANGELOG.md
@@ -125,7 +125,7 @@ verifyConditions:
 
 ### Example `.versionrc.json`
 
-This is an example configuration file for a project using standard-version.
+This is an example configuration file for a project using commit-and-tag-version.
 
 ```json
 {
