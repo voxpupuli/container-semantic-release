@@ -8,6 +8,7 @@
     "@semantic-release/github": "^11.0.0",
     "@semantic-release/gitlab": "^13.2.1",
     "@semantic-release/release-notes-generator": "^14.0.1",
+    "commit-and-tag-version": "^12.6.0",
     "conventional-changelog-conventionalcommits": "^9.0.0",
     "conventional-changelog": "^7.1.1",
     "semantic-release-commits-lint": "^1.1.0",
@@ -17,7 +18,6 @@
     "semantic-release-major-tag": "^0.3.2",
     "semantic-release-pypi": "^5.0.0",
     "semantic-release-replace-plugin": "^1.2.7",
-    "semantic-release": "^24.1.1",
-    "standard-version": "^9.5.0"
+    "semantic-release": "^24.1.1"
   }
 }
