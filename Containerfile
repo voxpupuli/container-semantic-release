@@ -1,4 +1,4 @@
-FROM docker.io/library/node:24.9.0-alpine3.21 AS build
+FROM docker.io/library/node:24.10.0-alpine3.22 AS build
 
 WORKDIR /npm
 COPY package.json /npm
@@ -7,7 +7,7 @@ RUN npm install
 
 ###############################################################################
 
-FROM docker.io/library/node:24.9.0-alpine3.21 AS final
+FROM docker.io/library/node:24.10.0-alpine3.22 AS final
 
 LABEL org.label-schema.maintainer="Voxpupuli Team <voxpupuli@groups.io>" \
       org.label-schema.vendor="Voxpupuli" \
@@ -16,17 +16,17 @@ LABEL org.label-schema.maintainer="Voxpupuli Team <voxpupuli@groups.io>" \
       org.label-schema.license="AGPL-3.0-or-later" \
       org.label-schema.vcs-url="https://github.com/voxpupuli/container-semantic-release" \
       org.label-schema.schema-version="1.0" \
-      org.label-schema.dockerfile="/Dockerfile"
+      org.label-schema.dockerfile="/Containerfile"
 
-COPY Dockerfile /
-COPY docker-entrypoint.sh /
-COPY docker-entrypoint.d /docker-entrypoint.d
+COPY Containerfile /
+COPY container-entrypoint.sh /
+COPY container-entrypoint.d /container-entrypoint.d
 COPY scripts /scripts
 COPY --from=build /npm /npm
 
 RUN apk update && apk upgrade \
     && apk add --no-cache --update git git-lfs openssh-client bash jq curl \
-    && chmod +x /docker-entrypoint.sh /docker-entrypoint.d/*.sh
+    && chmod +x /container-entrypoint.sh /container-entrypoint.d/*.sh
 
 # fix ENOGITREPO Not running from a git repository.
 RUN git config --global --add safe.directory '*'
@@ -37,7 +37,7 @@ ENV CERT_JSON=""
 ENV PATH="$PATH:/npm/node_modules/.bin"
 ENV NODE_OPTIONS="--use-openssl-ca"
 
-# The CI_* are empty, because docker does not know about them on build time.
+# The CI_* are empty, because container runtime does not know about them on build time.
 ENV ROCKETCHAT_EMOJI=":tada:"
 ENV ROCKETCHAT_MESSAGE_TEXT="A new tag for the project ${CI_PROJECT_NAME} was created by ${CI_COMMIT_AUTHOR}."
 ENV ROCKETCHAT_HOOK_URL="https://rocketchat.example.com/hooks/here_be_dragons"
@@ -49,5 +49,5 @@ ENV MATTERMOST_MESSAGE_TEXT="A new tag for the project ${CI_PROJECT_NAME} was cr
 ENV MATTERMOST_HOOK_URL="https://mattermost.example.com/hooks/here_be_dragons"
 ENV MATTERMOST_TAGS_URL="${CI_PROJECT_URL}/-/tags"
 
-ENTRYPOINT [ "/docker-entrypoint.sh" ]
+ENTRYPOINT [ "/container-entrypoint.sh" ]
 CMD [ "--dry-run" ]

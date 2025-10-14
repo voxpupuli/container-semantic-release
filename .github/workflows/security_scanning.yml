@@ -27,6 +27,7 @@ jobs:
       - name: Build local container
         uses: docker/build-push-action@v6
         with:
+          file: Containerfile
           tags: 'ci/test:latest'
           push: false
 
