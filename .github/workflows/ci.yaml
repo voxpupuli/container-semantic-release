@@ -24,6 +24,7 @@ jobs:
       - name: Build image
         uses: docker/build-push-action@v6
         with:
+          file: Containerfile
           tags: 'ci/semantic-release:${{ github.event.number }}'
           push: false
 
