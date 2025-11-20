@@ -37,20 +37,20 @@ podman run -it --rm -v $PWD:/data:Z --entrypoint conventional-changelog ghcr.io/
 
 The container has the following pre-defined environment variables:
 
-| Variable                | Default |
-|-------------------------|---------|
-| CERT_JSON               | no default |
-| PATH                    | `$PATH:/npm/node_modules/.bin` |
-| NODE_OPTIONS            | `--use-openssl-ca` |
-| ROCKETCHAT_EMOJI        | `:tada:` |
+| Variable                | Default                                                                            |
+| ----------------------- | ---------------------------------------------------------------------------------- |
+| CERT_JSON               | no default                                                                         |
+| PATH                    | `$PATH:/npm/node_modules/.bin`                                                     |
+| NODE_OPTIONS            | `--use-openssl-ca`                                                                 |
+| ROCKETCHAT_EMOJI        | `:tada:`                                                                           |
 | ROCKETCHAT_MESSAGE_TEXT | `A new tag for the project ${CI_PROJECT_NAME} was created by ${CI_COMMIT_AUTHOR}.` |
-| ROCKETCHAT_HOOK_URL     | `https://rocketchat.example.com/hooks/here_be_dragons` |
-| ROCKETCHAT_TAGS_URL     | `${CI_PROJECT_URL}/-/tags` |
-| MATTERMOST_EMOJI        | `:tada:` |
+| ROCKETCHAT_HOOK_URL     | `https://rocketchat.example.com/hooks/here_be_dragons`                             |
+| ROCKETCHAT_TAGS_URL     | `${CI_PROJECT_URL}/-/tags`                                                         |
+| MATTERMOST_EMOJI        | `:tada:`                                                                           |
 | MATTERMOST_MESSAGE_TEXT | `A new tag for the project ${CI_PROJECT_NAME} was created by ${CI_COMMIT_AUTHOR}.` |
-| MATTERMOST_HOOK_URL     | `https://mattermost.example.com/hooks/here_be_dragons` |
-| MATTERMOST_TAGS_URL     | `${CI_PROJECT_URL}/-/tags` |
-| MATTERMOST_USERNAME     | `Semantic Release` |
+| MATTERMOST_HOOK_URL     | `https://mattermost.example.com/hooks/here_be_dragons`                             |
+| MATTERMOST_TAGS_URL     | `${CI_PROJECT_URL}/-/tags`                                                         |
+| MATTERMOST_USERNAME     | `Semantic Release`                                                                 |
 
 ### Example `.releaserc.yaml`
 
