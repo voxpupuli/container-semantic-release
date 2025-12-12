@@ -191,7 +191,7 @@ release:
       - if-not-present
   interruptible: true
   script:
-    - /docker-entrypoint.sh
+    - /container-entrypoint.sh
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
     - if: $CI_COMMIT_BRANCH == "main"
@@ -319,4 +319,4 @@ You may add this as a CI Variable for your runners on Github/Gitlab.
 {"certificates":{"root_ca":"-----BEGIN CERTIFICATE-----\n...","signing_ca":"-----BEGIN CERTIFICATE-----\n..."}}
 ```
 
-For more details have a look at [docker-entrypoint.sh](docker-entrypoint.sh) and [docker-entrypoint.d](docker-entrypoint.d/).
+For more details have a look at [container-entrypoint.sh](container-entrypoint.sh) and [container-entrypoint.d](container-entrypoint.d/).
