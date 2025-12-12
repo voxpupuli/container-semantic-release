@@ -3,8 +3,8 @@
 
 set -e
 
-if [ -d /docker-entrypoint.d/ ]; then
-    find /docker-entrypoint.d/ -type f -name "*.sh" \
+if [ -d /container-entrypoint.d/ ]; then
+    find /container-entrypoint.d/ -type f -name "*.sh" \
         -exec echo Running {} \; -exec bash {} \;
 fi
 
