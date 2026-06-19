@@ -28,6 +28,16 @@ jobs:
           tags: 'ci/semantic-release:${{ github.event.number }}'
           push: false
 
+      - name: Clone voxpupuli/puppet-example repository
+        uses: actions/checkout@v4
+        with:
+          repository: voxpupuli/puppet-example
+
+      # Container runs dry-run of semantic-release by default
+      - name: Test container
+        run: |
+          docker run --rm  -e GITHUB_TOKEN="${{ secrets.SR_CI_DRY_RUN }}" -v $(pwd):/data ci/semantic-release:${{ github.event.number }}
+
   tests:
     needs:
       - build_test_container
