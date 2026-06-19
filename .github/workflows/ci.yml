@@ -1,18 +1,26 @@
 ---
-name: 🚦 CI / Test Container Build
+# Managed by modulesync - DO NOT EDIT
+# https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
 
+name: 🚦 CI
+
+# yamllint disable-line rule:truthy
 on:
   pull_request:
     branches:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
-  build_test_container:
-    name: 'Build Test Container'
+  build-container:
+    name: Build test container
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -24,35 +32,35 @@ jobs:
       - name: Build image
         uses: docker/build-push-action@v7
         with:
+          context: .
           file: Containerfile
-          tags: 'ci/semantic-release:${{ github.event.number }}'
+          tags: 'ci/semantic-release:${{ github.sha }}'
           push: false
 
   tests:
-    needs:
-      - build_test_container
-    runs-on: ubuntu-latest
     name: Test suite
+    if: always()
+    needs:
+      - build-container
+    runs-on: ubuntu-24.04
     steps:
-      - run: echo Test suite completed
+      - name: Verify required jobs
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
 
   dependabot:
-    permissions:
-      contents: write
-    name: 'Dependabot auto-merge'
+    name: Dependabot auto-merge
+    if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
     needs:
       - tests
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}}
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
-      - name: Dependabot metadata
-        id: metadata
-        uses: dependabot/fetch-metadata@v3.1.0
-        with:
-          github-token: '${{ secrets.GITHUB_TOKEN }}'
-
-      - name: Enable auto-merge for Dependabot PRs
-        run: gh pr merge --auto --merge "$PR_URL"
+      - name: Enable auto-merge for Dependabot PR
         env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge --auto --merge "$PR_URL"
