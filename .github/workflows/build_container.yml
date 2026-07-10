@@ -1,52 +1,71 @@
 ---
-name: Build and publish a 🛢️ container
+# Managed by modulesync - DO NOT EDIT
+# https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
 
+name: 📦 Build and Publish
+
+# yamllint disable-line rule:truthy
 on:
   push:
     branches:
-      - 'main'
+      - main
     tags:
       - '*'
   workflow_dispatch:
+
+concurrency:
+  group: build-and-publish-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
   build-and-push-container:
+    name: Build and publish container
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
-      - name: Source checkout
-        uses: actions/checkout@v7
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - name: Get semantic-release version
-        id: get_version
-        run: echo "sr_version="$(jq -r '.dependencies."semantic-release"' package.json | sed 's/\^//') >> $GITHUB_OUTPUT
+      - name: Determine semantic-release version
+        id: version
+        run: |
+          echo "version=$(jq -r '.dependencies.\"semantic-release\"' package.json | sed 's/\\^//')" >> "$GITHUB_OUTPUT"
 
-      # Parse ref_name and if it is main, change it ot latest
-      - name: Set tag
-        id: set_tag
-        run: echo "tag=$(echo ${{ github.ref_name }} | sed 's/^main$/latest/')" >> $GITHUB_OUTPUT
+      - name: Determine channel tag
+        id: channel
+        run: |
+          echo "tag=$(echo '${{ github.ref_name }}' | sed 's/^main$/latest/')" >> "$GITHUB_OUTPUT"
 
-      - name: Build Vox Pupuli semantic-release container
-        uses: voxpupuli/gha-build-and-publish-a-container@v2
+      - name: Build and publish container
+        id: build
+        uses: voxpupuli/gha-build-and-publish-a-container@f1680271a3fd34267c1401c760a15f45a9cf34ca # v2.0.0
         with:
           registry_password: ${{ secrets.GITHUB_TOKEN }}
           build_arch: linux/amd64,linux/arm64
+          build_context: .
           buildfile: Containerfile
-          docker_username: voxpupulibot
-          docker_password: ${{ secrets.DOCKERHUB_BOT_ADMIN_TOKEN }}
           tags: |
-            ghcr.io/voxpupuli/semantic-release:${{ steps.get_version.outputs.sr_version }}-${{ steps.set_tag.outputs.tag }}
+            ghcr.io/voxpupuli/semantic-release:${{ steps.version.outputs.version }}-${{ steps.channel.outputs.tag }}
             ghcr.io/voxpupuli/semantic-release:latest
-            docker.io/voxpupuli/semantic-release:${{ steps.get_version.outputs.sr_version }}-${{ steps.set_tag.outputs.tag }}
+            docker.io/voxpupuli/semantic-release:${{ steps.version.outputs.version }}-${{ steps.channel.outputs.tag }}
             docker.io/voxpupuli/semantic-release:latest
 
-      - name: Update Docker Hub Description
-        uses: peter-evans/dockerhub-description@v5
+  update-dockerhub-description:
+    name: Update Docker Hub description
+    runs-on: ubuntu-latest
+    needs:
+      - build-and-push-container
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Update Docker Hub description
+        uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa # v5.0.0
         with:
           username: voxpupulibot
           password: ${{ secrets.DOCKERHUB_BOT_ADMIN_TOKEN }}
