@@ -2,4 +2,4 @@
 
 set -e
 
-git config --global --add safe.directory '/data'
+git config set --global --append safe.directory /data
