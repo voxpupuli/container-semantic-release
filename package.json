@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@iwavesmedia/semantic-release-composer": "^1.1.1",
     "@bobvanderlinden/semantic-release-pull-request-analyzer": "^1.0.4",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.0",
