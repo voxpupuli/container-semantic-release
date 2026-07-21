@@ -2,10 +2,10 @@
   "dependencies": {
     "@iwavesmedia/semantic-release-composer": "^1.1.1",
     "@bobvanderlinden/semantic-release-pull-request-analyzer": "^1.0.4",
-    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/commit-analyzer": "^13.0.0",
     "@semantic-release/exec": "^7.0.3",
-    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/git": "^11.0.0",
     "@semantic-release/github": "^12.0.0",
     "@semantic-release/gitlab": "^13.2.1",
     "@semantic-release/release-notes-generator": "^14.0.1",
