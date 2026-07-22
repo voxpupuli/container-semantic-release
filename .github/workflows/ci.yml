@@ -10,6 +10,9 @@ on:
     branches:
       - main
   workflow_dispatch:
+  merge_group:
+    branches:
+      - main
 
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
@@ -20,17 +23,17 @@ permissions:
 
 jobs:
   build-container:
-    name: Build test container
+    name: Build ci container
     runs-on: ubuntu-latest
     permissions:
       actions: read
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Build image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: .
           file: Containerfile
@@ -48,19 +51,3 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
-
-  dependabot:
-    name: Dependabot auto-merge
-    if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
-    needs:
-      - tests
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: Enable auto-merge for Dependabot PR
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
-        run: gh pr merge --auto --merge "$PR_URL"
