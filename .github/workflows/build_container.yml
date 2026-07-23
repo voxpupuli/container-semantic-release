@@ -34,7 +34,7 @@ jobs:
       - name: Determine semantic-release version
         id: version
         run: |
-          echo "version=$(jq -r '.dependencies.\"semantic-release\"' package.json | sed 's/\\^//')" >> "$GITHUB_OUTPUT"
+          echo "version=$(jq -r '.dependencies."semantic-release" | ltrimstr("^")' package.json)" >> "$GITHUB_OUTPUT"
 
       - name: Determine channel tag
         id: channel
