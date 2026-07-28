@@ -34,7 +34,14 @@ COPY scripts /scripts
 COPY --from=build /npm /npm
 
 RUN apk update && apk upgrade --no-cache \
-    && apk add --no-cache --update git git-lfs openssh-client bash jq curl \
+    && apk add --no-cache --update \
+        bash \
+        curl \
+        git \
+        git-lfs \
+        jq \
+        openssh-client \
+        socat \
     && chmod +x /container-entrypoint.sh /container-entrypoint.d/*.sh
 
 # fix ENOGITREPO Not running from a git repository.
