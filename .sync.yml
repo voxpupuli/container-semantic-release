@@ -1,6 +1,14 @@
 ---
 :global:
   image_tag: 'ci/semantic-release:${{ github.sha }}'
+.github/workflows/ci.yml:
+  test_commands:
+    - >-
+      docker run --rm
+      -v "$PWD:/data:Z"
+      --entrypoint node
+      ci/semantic-release:${{ github.sha }}
+      test/release-notes.mjs
 .github/workflows/build_container.yml:
   publish_pre_build_steps:
     - name: Determine semantic-release version

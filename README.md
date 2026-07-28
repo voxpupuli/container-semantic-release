@@ -52,76 +52,28 @@ The container has the following pre-defined environment variables:
 | MATTERMOST_TAGS_URL     | `${CI_PROJECT_URL}/-/tags`                                                         |
 | MATTERMOST_USERNAME     | `Semantic Release`                                                                 |
 
-### Example `.releaserc.yaml`
+### Example release configuration
 
-This is an example configuration file for a project using semantic-release.
+See [`examples/release.config.mjs`](examples/release.config.mjs) for a complete configuration using the
+`conventionalcommits` v10 preset.
 
-```yaml
----
-branches:
- - 'main'
- - 'master'
- - 'production'
+Copy the example to the root directory of the project that should be released and name it `release.config.mjs`.
+This is the standard location that semantic-release discovers automatically:
 
-ci: true
-debug: true
-dryRun: false
-preset: 'conventionalcommits'
-
-gitlabUrl: 'https://gitlab.example.com'
-gitlabApiPathPrefix: '/api/v4'
-
-plugins:
-  - path: '@semantic-release/commit-analyzer'
-    releaseRules:
-      - { breaking: true, release: major }
-      - { type: build,    release: patch }
-      - { type: chore,    release: false }
-      - { type: ci,       release: false }
-      - { type: dep,      release: patch }
-      - { type: docs,     release: patch }
-      - { type: feat,     release: minor }
-      - { type: fix,      release: patch }
-      - { type: perf,     release: patch }
-      - { type: refactor, release: false }
-      - { type: revert,   release: patch }
-      - { type: test,     release: false }
-
-  - path: '@semantic-release/release-notes-generator'
-    writerOpts:
-      groupBy: 'type'
-      commitGroupsSort: 'title'
-      commitsSort: 'header'
-    parserOpts:
-      # detect JIRA issues in merge commits
-      issuePrefixes: ['SUP', 'BUG', 'FEATURE']
-      noteKeywords: ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
-    presetConfig:
-      issueUrlFormat: "https://jira.example.com/browse/{{prefix}}{{id}}"
-      types:
-        - { type: 'build',    section: '👷 Build' }
-        - { type: 'chore',    section: '🧹 Chores' }
-        - { type: 'ci',       section: '🚦 CI/CD' }
-        - { type: 'dep',      section: '👾 Dependencies' }
-        - { type: 'docs',     section: '📚 Docs' }
-        - { type: 'feat',     section: '🚀 Features' }
-        - { type: 'fix',      section: '🛠️ Fixes' }
-        - { type: 'perf',     section: '⏩ Performance' }
-        - { type: 'refactor', section: '🔨 Refactor' }
-        - { type: 'revert',   section: '🙅 Reverts' }
-        - { type: 'test',     section: '🚥 Tests' }
-
-  - path: '@semantic-release/changelog'
-    changelogFile: 'CHANGELOG.md'
-
-  - path: '@semantic-release/git'
-    assets:
-      - 'CHANGELOG.md'
-
-verifyConditions:
-  - '@semantic-release/changelog'
-  - '@semantic-release/git'
+```text
+your-project/
+├── release.config.mjs
+├── package.json
+└── ...
 ```
+
+Locations such as `.github/release.config.mjs` or `.gitlab/release.config.mjs` are not discovered automatically.
+They only work when semantic-release is invoked with an explicit path, for example
+`semantic-release --extends ./.github/release.config.mjs`.
+Keeping the file in the project root is recommended unless the CI command is centrally controlled.
+
+The JavaScript configuration allows the example to provide a custom JIRA URL formatter, which cannot be expressed in
+YAML.
 
 ### Example `.versionrc.json`
 
@@ -147,36 +99,49 @@ This is an example configuration file for a project using commit-and-tag-version
 
 ### Update metadata.json of a Puppet module
 
-This refers to the example config from above...
+This can be added to the example configuration:
 
-```yaml
-plugins:
-#...
-  - path: 'semantic-release-replace-plugin'
-    replacements:
-      - files: ['metadata.json']
-        from: "\"version\": \".*\""
-        to: "\"version\": \"${nextRelease.version}\""
-        countMatches: true
-        results:
-          - file: 'metadata.json'
-            hasChanged: true
-            numMatches: 1
-            numReplacements: 1
-#...
-  - path: '@semantic-release/git'
-    assets:
-      # ...
-      - 'metadata.json'
+```javascript
+plugins: [
+  // ...
+  [
+    "semantic-release-replace-plugin",
+    {
+      replacements: [
+        {
+          files: ["metadata.json"],
+          from: '"version": ".*"',
+          to: '"version": "${nextRelease.version}"',
+          countMatches: true,
+          results: [
+            {
+              file: "metadata.json",
+              hasChanged: true,
+              numMatches: 1,
+              numReplacements: 1,
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  // ...
+  [
+    "@semantic-release/git",
+    {
+      assets: ["CHANGELOG.md", "metadata.json"],
+    },
+  ],
+],
 ```
 
 ### Gitlab
 
-This is a example to use this container in Gitlab.
-It requires, that you have:
+This is an example of using this container in GitLab.
+Configure semantic-release with one of the following:
 
 - A `.releaserc` file, written in YAML or JSON, with optional extensions: `.yaml` / `.yml` / `.json` / `.js` / `.cjs` / `.mjs`
-- A `release.config.(js|cjs|.mjs)` file that exports an object
+- A `release.config.(js|cjs|mjs)` file that exports an object
 - A `release` key in the project's `package.json` file
 
 ```yaml
@@ -258,21 +223,24 @@ The script accesses the environment variables:
 - `MATTERMOST_HOOK_URL`
 - `MATTERMOST_USERNAME`
 
-#### .releaserc.yaml
+#### release.config.mjs
 
-```yaml
----
-# ...
-plugins:
-# Most people will choose between one of those two:
-# ...
-  - path: '@semantic-release/exec'
-    publishCmd: "/scripts/notify-rocketchat.sh -V v${nextRelease.version} -o '--insecure' -d"
-# ...
-  - path: '@semantic-release/exec'
-    publishCmd: "/scripts/notify-mattermost.sh -V v${nextRelease.version} -o '--insecure' -d"
-# ...
-
+```javascript
+plugins: [
+  // Most people will choose between one of these two:
+  [
+    "@semantic-release/exec",
+    {
+      publishCmd: "/scripts/notify-rocketchat.sh -V v${nextRelease.version} -o '--insecure' -d",
+    },
+  ],
+  [
+    "@semantic-release/exec",
+    {
+      publishCmd: "/scripts/notify-mattermost.sh -V v${nextRelease.version} -o '--insecure' -d",
+    },
+  ],
+],
 ```
 
 #### .gitlab-ci.yml

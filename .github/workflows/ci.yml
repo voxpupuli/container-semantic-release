@@ -40,6 +40,10 @@ jobs:
           tags: 'ci/semantic-release:${{ github.sha }}'
           push: false
 
+      - name: Test image
+        run: |
+          docker run --rm -v "$PWD:/data:Z" --entrypoint node ci/semantic-release:${{ github.sha }} test/release-notes.mjs
+
   tests:
     name: Test suite
     if: always()
