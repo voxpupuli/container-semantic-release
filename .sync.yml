@@ -9,6 +9,14 @@
       --entrypoint node
       ci/semantic-release:${{ github.sha }}
       test/release-notes.mjs
+    - >-
+      docker run --rm
+      --read-only
+      --user 65534:65534
+      -v "$PWD:/data:ro,Z"
+      --entrypoint git
+      ci/semantic-release:${{ github.sha }}
+      rev-parse --is-inside-work-tree
 .github/workflows/build_container.yml:
   publish_pre_build_steps:
     - name: Determine semantic-release version

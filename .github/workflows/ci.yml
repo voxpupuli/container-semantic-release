@@ -43,6 +43,7 @@ jobs:
       - name: Test image
         run: |
           docker run --rm -v "$PWD:/data:Z" --entrypoint node ci/semantic-release:${{ github.sha }} test/release-notes.mjs
+          docker run --rm --read-only --user 65534:65534 -v "$PWD:/data:ro,Z" --entrypoint git ci/semantic-release:${{ github.sha }} rev-parse --is-inside-work-tree
 
   tests:
     name: Test suite
