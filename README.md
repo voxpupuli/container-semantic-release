@@ -33,6 +33,19 @@ podman run -it --rm -v $PWD:/data:Z --entrypoint commit-and-tag-version ghcr.io/
 podman run -it --rm -v $PWD:/data:Z --entrypoint conventional-changelog ghcr.io/voxpupuli/semantic-release:latest -p angular -i CHANGELOG.md
 ```
 
+To run semantic-release as the current host user instead of root, pass the host UID and GID to the container:
+
+```shell
+podman run -it --rm \
+  --user "$(id -u):$(id -g)" \
+  -v "$PWD:/data:Z" \
+  ghcr.io/voxpupuli/semantic-release:latest
+```
+
+The Git trust setting for `/data` is stored in the system-wide Git configuration, so it applies to every runtime user
+without creating a user-specific `$HOME/.gitconfig`. The mounted repository must still be writable if semantic-release
+needs to update files such as `CHANGELOG.md` or `package.json`.
+
 ### Variables
 
 The container has the following pre-defined environment variables:
