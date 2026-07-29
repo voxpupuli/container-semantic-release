@@ -9,6 +9,7 @@
       --entrypoint node
       ci/semantic-release:${{ github.sha }}
       test/release-notes.mjs
+    - test/ca-certificates.sh 'ci/semantic-release:${{ github.sha }}'
 .github/workflows/build_container.yml:
   publish_pre_build_steps:
     - name: Determine semantic-release version

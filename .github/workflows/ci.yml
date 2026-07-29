@@ -43,6 +43,7 @@ jobs:
       - name: Test image
         run: |
           docker run --rm -v "$PWD:/data:Z" --entrypoint node ci/semantic-release:${{ github.sha }} test/release-notes.mjs
+          test/ca-certificates.sh 'ci/semantic-release:${{ github.sha }}'
 
   tests:
     name: Test suite
