@@ -45,7 +45,7 @@ RUN apk update && apk upgrade --no-cache \
     && chmod +x /container-entrypoint.sh /container-entrypoint.d/*.sh
 
 # fix ENOGITREPO Not running from a git repository.
-RUN git config --global --add safe.directory '*'
+RUN git config set --system --append safe.directory /data
 
 WORKDIR /data
 
