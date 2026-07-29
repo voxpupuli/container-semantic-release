@@ -27,6 +27,9 @@ LABEL org.label-schema.maintainer="Voxpupuli Team <voxpupuli@groups.io>" \
       org.label-schema.schema-version="1.0" \
       org.label-schema.dockerfile="/Containerfile"
 
+ARG user_id=1001
+ARG group_id=1001
+
 COPY Containerfile /
 COPY container-entrypoint.sh /
 COPY container-entrypoint.d /container-entrypoint.d
@@ -42,16 +45,21 @@ RUN apk update && apk upgrade --no-cache \
         jq \
         openssh-client \
         socat \
-    && chmod +x /container-entrypoint.sh /container-entrypoint.d/*.sh
-
-# fix ENOGITREPO Not running from a git repository.
-RUN git config set --system --append safe.directory /data
+    && chmod +x /container-entrypoint.sh /container-entrypoint.d/*.sh \
+    && git config set --system --append safe.directory /data \
+    && addgroup -g ${group_id} sr \
+    && adduser -G sr -u ${user_id} -h /data -H -D -s /sbin/nologin sr
 
 WORKDIR /data
 
-ENV CERT_JSON=""
 ENV PATH="$PATH:/npm/node_modules/.bin"
 ENV NODE_OPTIONS="--use-openssl-ca"
+# The following environment variable is used to configure the CA certificates for SSL connections.
+ENV SSL_CERT_FILE="/tmp/semantic-release-ca-certificates.crt"
+# The following environment variable is used to configure the CA certificates for Git.
+ENV GIT_SSL_CAINFO="${SSL_CERT_FILE}"
+# The following environment variable is used to configure the CA certificates for Node.js.
+ENV NODE_EXTRA_CA_CERTS="${SSL_CERT_FILE}"
 
 # The CI_* are empty, because container runtime does not know about them on build time.
 ENV ROCKETCHAT_EMOJI=":tada:"
@@ -64,6 +72,8 @@ ENV MATTERMOST_USERNAME="Semantic Release"
 ENV MATTERMOST_MESSAGE_TEXT="A new tag for the project ${CI_PROJECT_NAME} was created by ${CI_COMMIT_AUTHOR}."
 ENV MATTERMOST_HOOK_URL="https://mattermost.example.com/hooks/here_be_dragons"
 ENV MATTERMOST_TAGS_URL="${CI_PROJECT_URL}/-/tags"
+
+USER sr
 
 ENTRYPOINT [ "/container-entrypoint.sh" ]
 CMD [ "--dry-run" ]

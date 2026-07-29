@@ -39,9 +39,11 @@ The container has the following pre-defined environment variables:
 
 | Variable                | Default                                                                            |
 | ----------------------- | ---------------------------------------------------------------------------------- |
-| CERT_JSON               | no default                                                                         |
 | PATH                    | `$PATH:/npm/node_modules/.bin`                                                     |
 | NODE_OPTIONS            | `--use-openssl-ca`                                                                 |
+| SSL_CERT_FILE           | `/tmp/semantic-release-ca-certificates.crt`                                       |
+| GIT_SSL_CAINFO          | `/tmp/semantic-release-ca-certificates.crt`                                       |
+| NODE_EXTRA_CA_CERTS     | `/tmp/semantic-release-ca-certificates.crt`                                       |
 | ROCKETCHAT_EMOJI        | `:tada:`                                                                           |
 | ROCKETCHAT_MESSAGE_TEXT | `A new tag for the project ${CI_PROJECT_NAME} was created by ${CI_COMMIT_AUTHOR}.` |
 | ROCKETCHAT_HOOK_URL     | `https://rocketchat.example.com/hooks/here_be_dragons`                             |
@@ -274,17 +276,14 @@ Release v1.2.3
 
 ### Adding additional certificates to the container
 
-If you somehow need own certificates inside the container, you can add them over the entrypoint script.
+Mount additional CA certificates into `/certificates`.
+The entrypoint accepts files with a `.crt` or `.pem` extension and adds them to a rootless CA bundle at runtime.
+Node.js, Git, and other OpenSSL clients use this bundle through their preconfigured environment variables.
 
-For example: you want to run the a webhook on a target with your own ca certificates.
-Export the `CERT_JSON` and the container will import it on runtime.
-It is expected that the certificates are a json hash of PEM certificates.
-It is preferable that the json is uglified into a onliner.
-
-You may add this as a CI Variable for your runners on Github/Gitlab.
-
-```json
-{"certificates":{"root_ca":"-----BEGIN CERTIFICATE-----\n...","signing_ca":"-----BEGIN CERTIFICATE-----\n..."}}
+```shell
+podman run --rm \
+  --volume "$PWD/certificates:/certificates:ro,Z" \
+  ghcr.io/voxpupuli/semantic-release:latest
 ```
 
 For more details have a look at [container-entrypoint.sh](container-entrypoint.sh) and [container-entrypoint.d](container-entrypoint.d/).
