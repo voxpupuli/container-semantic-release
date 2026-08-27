@@ -23,7 +23,7 @@
   },
   "overrides": {
     "@semantic-release/release-notes-generator": {
-      "conventional-changelog-writer": "9.2.0"
+      "conventional-changelog-writer": "9.2.1"
     }
   }
 }
