@@ -1,6 +1,6 @@
 # Voxpupuli Semantic Release Container
 
-[![CI](https://github.com/voxpupuli/container-semantic-release/actions/workflows/ci.yaml/badge.svg)](https://github.com/voxpupuli/container-semantic-release/actions/workflows/ci.yaml)
+[![CI](https://github.com/voxpupuli/container-semantic-release/actions/workflows/ci.yml/badge.svg)](https://github.com/voxpupuli/container-semantic-release/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/voxpupuli/container-semantic-release.svg)](https://github.com/voxpupuli/container-semantic-release/blob/main/LICENSE)
 [![Sponsored by betadots GmbH](https://img.shields.io/badge/Sponsored%20by-betadots%20GmbH-blue.svg)](https://www.betadots.de)
 
@@ -9,6 +9,21 @@
 This container can be used to create project releases.
 It encapsulates [semantic-release](https://semantic-release.gitbook.io/semantic-release) and all necessary plugins.
 See [package.json](package.json) for details. This is a npm application running in an alpine container.
+
+## ‼️ Important Notice
+
+The npm `overrides` in [`package.json`](package.json) keep the release-notes generator's preset and writer compatible:
+
+- `conventional-changelog-writer` is pinned to `9.2.1` to support the `conventionalcommits` v10 preset.
+- `conventional-changelog-angular` is pinned to `9.4.0` to support the same writer when using the default Angular preset.
+
+`@semantic-release/release-notes-generator` v14.1.1 normally requests Angular 8 and Writer 8.
+Overriding only the writer combines Angular 8's string templates with Writer 9's expected template functions.
+This causes `TypeError: headerPartial is not a function` when no preset is specified or `preset: "angular"` is used.
+See [issue #146](https://github.com/voxpupuli/container-semantic-release/issues/146).
+
+We must keep these overrides until the generator's dependencies support both presets without them.
+The release-notes test covers the default preset, explicit Angular, and the Conventional Commits example with JIRA links.
 
 ## Usage
 
