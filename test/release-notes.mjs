@@ -52,7 +52,7 @@ const choreReleaseType = await analyzeCommits(analyzerOptions, {
 
 assert.equal(choreReleaseType, null);
 
-const notes = await generateNotes(generatorOptions, {
+const notesContext = {
   ...baseContext,
   commits,
   lastRelease: {
@@ -64,7 +64,22 @@ const notes = await generateNotes(generatorOptions, {
     gitTag: "v1.1.0",
     version: "1.1.0",
   },
-});
+};
+
+// Cover the default Angular preset as well as explicit preset resolution.
+for (const options of [{}, { preset: "angular" }]) {
+  const releaseType = await analyzeCommits(options, { ...baseContext, commits });
+  assert.equal(releaseType, "minor");
+
+  const notes = await generateNotes(options, notesContext);
+  assert.match(notes, /### Features/);
+  assert.match(notes, /add useful feature/);
+  assert.match(notes, /### Bug Fixes/);
+  assert.match(notes, /repair BUG-123/);
+  assert.doesNotMatch(notes, /document maintenance/);
+}
+
+const notes = await generateNotes(generatorOptions, notesContext);
 
 const expectedNotes = [
   "### 🧹 Chores",
