@@ -18,7 +18,15 @@
       ci/semantic-release:${{ github.sha }}
       rev-parse --is-inside-work-tree
 .github/workflows/build_container.yml:
-  publish_pre_build_steps:
+  matrix_command: yq -o=json build_platforms.yaml | jq -c
+  matrix_requires_yq: true
+  publish_runner: '${{ matrix.runner }}'
+  publish_build_job_name: 'Build semantic-release (${{ matrix.platform }})'
+  publish_build_arch: 'linux/${{ matrix.platform }}'
+  publish_setup_outputs:
+    version: '${{ steps.version.outputs.version }}'
+    channel: '${{ steps.channel.outputs.tag }}'
+  publish_setup_steps:
     - name: Determine semantic-release version
       id: version
       commands:
@@ -28,8 +36,16 @@
       commands:
         - echo "tag=$(echo '${{ github.ref_name }}' | sed 's/^main$/latest/')" >> "$GITHUB_OUTPUT"
   publish_tags:
-    - 'ghcr.io/voxpupuli/semantic-release:${{ steps.version.outputs.version }}-${{ steps.channel.outputs.tag }}'
-    - 'ghcr.io/voxpupuli/semantic-release:latest'
-    - 'docker.io/voxpupuli/semantic-release:${{ steps.version.outputs.version }}-${{ steps.channel.outputs.tag }}'
-    - 'docker.io/voxpupuli/semantic-release:latest'
+    - 'ghcr.io/voxpupuli/semantic-release:sha-${{ github.sha }}-${{ matrix.platform }}'
+  publish_manifest_steps:
+    - name: Create multi-architecture manifests
+      commands:
+        - >-
+          docker buildx imagetools create
+          -t ghcr.io/voxpupuli/semantic-release:${{ needs.setup-matrix.outputs.version }}-${{ needs.setup-matrix.outputs.channel }}
+          -t ghcr.io/voxpupuli/semantic-release:latest
+          -t docker.io/voxpupuli/semantic-release:${{ needs.setup-matrix.outputs.version }}-${{ needs.setup-matrix.outputs.channel }}
+          -t docker.io/voxpupuli/semantic-release:latest
+          ghcr.io/voxpupuli/semantic-release:sha-${{ github.sha }}-amd64
+          ghcr.io/voxpupuli/semantic-release:sha-${{ github.sha }}-arm64
   dockerhub_repository: voxpupuli/semantic-release
