@@ -24,7 +24,7 @@
   "overrides": {
     "@semantic-release/release-notes-generator": {
       "conventional-changelog-angular": "9.4.0",
-      "conventional-changelog-writer": "9.2.1"
+      "conventional-changelog-writer": "9.3.0"
     }
   }
 }
