@@ -19,7 +19,7 @@
     "semantic-release-major-tag": "^0.3.2",
     "semantic-release-pypi": "^5.0.0",
     "semantic-release-replace-plugin": "^1.2.7",
-    "semantic-release": "26.0.0"
+    "semantic-release": "26.0.1"
   },
   "overrides": {
     "@semantic-release/release-notes-generator": {
