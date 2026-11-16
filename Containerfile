@@ -1,4 +1,4 @@
-FROM docker.io/library/node:24-alpine AS base
+FROM docker.io/library/node:26-alpine AS base
 
 ARG NPM_VERSION=12.0.1
 
